@@ -25,7 +25,7 @@ var engine *xorm.Engine
 
 func main() {
 	var err error
-		engine, err = xorm.NewEngine("mysql", "root:1987123@tcp(127.0.0.1:3306)/cangku?charset=utf8")
+		engine, err = xorm.NewEngine("mysql", "root:1987123@tcp(162.250.100.104:3306)/cangku?charset=utf8")
 		if err != nil {
 			panic(err)
 		}
@@ -92,11 +92,19 @@ f := new(model.Files)
 }
 
 func work(w http.ResponseWriter, r *http.Request) {
-rw := []byte(r.URL.String())
-	    w.Write(rw)
-	    ufile, ft, _ := r.FormFile("file")
+//rw := []byte(r.URL.String())
+
+	    ufile, ft, e := r.FormFile("file")
+		if e!=nil{
+			fmt.Println(e)
+		}
 	    name := ft.Filename
-	    source, _ := ioutil.ReadAll(ufile)
+			
+	    source, err := ioutil.ReadAll(ufile)
+		if err!= nil{
+			fmt.Println(err)
+			
+		}
 	    hash := b(string(source))
 	    saveFile(source, hash[0:3]+"/"+name)
 	    f := new(model.Files)
@@ -108,6 +116,9 @@ rw := []byte(r.URL.String())
 	    f.Size = len(source)
 	    f.Status = 1
 	    toCangku(f)
+	im := "/upload/getfile/"+f.Addr
+	
+		w.Write([]byte(im))
 	    //	fmt.Println(r.FormFile("file"))
 }
 
@@ -136,7 +147,7 @@ err := os.MkdirAll(dir, 0777)
 }
 
 func getFile(w http.ResponseWriter, r *http.Request) {
-path := "/upload/getfile/"
+	path := "/upload/getfile/"
 	      //	fmt.Println()
 	      reg := strings.Replace(r.RequestURI, path, "", -1)
 	      fmt.Println(reg)
