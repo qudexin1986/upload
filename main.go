@@ -25,7 +25,7 @@ var engine *xorm.Engine
 
 func main() {
 	var err error
-		engine, err = xorm.NewEngine("mysql", "root:1987123@tcp(162.250.100.104:3306)/cangku?charset=utf8")
+		engine, err = xorm.NewEngine("mysql", "root:password@tcp(ip:3306)/cangku?charset=utf8")
 		if err != nil {
 			panic(err)
 		}
